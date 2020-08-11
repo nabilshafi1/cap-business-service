@@ -1,0 +1,7 @@
+---
+applications:
+- name: cap-business-service
+  path: srv/target/cds-services-archetype-exec.jar
+  random-route: true
+services:
+  - my-xsuaa
