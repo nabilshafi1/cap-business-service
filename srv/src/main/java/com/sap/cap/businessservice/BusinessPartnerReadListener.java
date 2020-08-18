@@ -1,6 +1,6 @@
 package com.sap.cap.businessservice;
 
-import cds.gen.cloud.sdk.capng.CapBusinessPartner;
+import cds.gen.cloud.sdk.capng.*;
 import com.sap.cds.services.cds.CdsCreateEventContext;
 import com.sap.cds.services.cds.CdsReadEventContext;
 import com.sap.cds.services.cds.CdsService;
@@ -20,19 +20,16 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 
 @Component
-@ServiceName( "cloud.sdk.capng" )
+@ServiceName("cloud.sdk.capng")
 public class BusinessPartnerReadListener implements EventHandler {
 
-    final HttpDestination httpDestination = DestinationAccessor.getDestination("MyErpSystem").asHttp();
-    private Map<Object, Map<String, Object>> businessPartner = new HashMap<>();
-    private static final Logger logger = LoggerFactory.getLogger(BusinessPartnerReadListener.class);
+    private final HttpDestination httpDestination = DestinationAccessor.getDestination("MyErpSystem").asHttp();
 
     @On(event = CdsService.EVENT_READ, entity = "cloud.sdk.capng.CapBusinessPartner")
     public void onRead(CdsReadEventContext context) throws ODataException {
 
 
         final Map<Object, Map<String, Object>> result = new HashMap<>();
-        httpDestination.getPropertyNames().forEach(e -> logger.warn(httpDestination.get(e,String.class).getOrElse("ss")));
         final List<BusinessPartner> businessPartners =
                 new DefaultBusinessPartnerService().getAllBusinessPartner().top(10).execute(httpDestination);
 
@@ -48,23 +45,20 @@ public class BusinessPartnerReadListener implements EventHandler {
 
     @On(event = CdsService.EVENT_CREATE, entity = "cloud.sdk.capng.CapBusinessPartner")
     public void onCreate(CdsCreateEventContext context) throws ODataException {
-        //context.getCqn().entries().forEach(e -> businessPartner.put(e.get("CapBusinessPartner"), e));
-        BusinessPartnerService service = new DefaultBusinessPartnerService();
-        BusinessPartner bp = new BusinessPartner();
-        for(Map<String,Object> m : context.getCqn().entries()){
-             bp = BusinessPartner.builder().firstName(m.get("firstName").toString()).lastName(m.get("surname").toString()).businessPartner(m.get("ID").toString()).build();
-        }
+        final BusinessPartnerService service = new DefaultBusinessPartnerService();
+
+        Map<String, Object> m = context.getCqn().entries().get(0);
+        BusinessPartner bp = BusinessPartner.builder().firstName(m.get("firstName").toString()).lastName(m.get("surname").toString()).businessPartner(m.get("ID").toString()).build();
+
         service.createBusinessPartner(bp).execute(httpDestination);
-        //context.setResult(context.getCqn().entries());
     }
 
     private List<CapBusinessPartner> convertS4BusinessPartnersToCapBusinessPartners(
             final List<BusinessPartner> s4BusinessPartners,
-            final String destinationName )
-    {
+            final String destinationName) {
         final List<CapBusinessPartner> capBusinessPartners = new ArrayList<>();
 
-        for( final BusinessPartner s4BusinessPartner : s4BusinessPartners ) {
+        for (final BusinessPartner s4BusinessPartner : s4BusinessPartners) {
             final CapBusinessPartner capBusinessPartner = com.sap.cds.Struct.create(CapBusinessPartner.class);
 
             capBusinessPartner.setFirstName(s4BusinessPartner.getFirstName());
