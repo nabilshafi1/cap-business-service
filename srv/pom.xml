@@ -31,6 +31,16 @@
 		</dependency>
 
 		<dependency>
+			<groupId>com.sap.cds</groupId>
+			<artifactId>cds-feature-cloudfoundry</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.sap.cds</groupId>
+			<artifactId>cds-feature-hana</artifactId>
+		</dependency>
+
+		<dependency>
 			<groupId>com.sap.cloud.sdk.s4hana</groupId>
 			<artifactId>s4hana-all</artifactId>
 		</dependency>
