@@ -40,11 +40,6 @@
 			</dependency>
 
 			<dependency>
-				<groupId>com.sap.cds</groupId>
-				<artifactId>cds-feature-cloudfoundry</artifactId>
-			</dependency>
-
-			<dependency>
 				<groupId>com.sap.cloud.sdk</groupId>
 				<artifactId>sdk-bom</artifactId>
 				<version>3.23.0</version>
